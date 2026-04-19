@@ -1,3 +1,16 @@
+## Usage:
+
+```
+  Group - PoisonKiller-BOF (client)
+  =====================================
+  pk-load                       Load the driver
+  pk-unload                     Unload the driver
+  pk-kill                       Kill process by PID
+  pk-delete                     Delete the file
+```
+
+<img width="507" height="181" alt="image" src="https://github.com/user-attachments/assets/bfa10c5b-04eb-4f54-94a3-5d3d19aaa7de" />
+
 
 ## Example:
 
