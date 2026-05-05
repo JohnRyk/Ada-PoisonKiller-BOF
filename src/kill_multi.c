@@ -52,6 +52,39 @@ static BOOL kill_pid(HANDLE hDevice, DWORD pid) {
         NULL);
 }
 
+
+BOOL ParsePidsFastA(
+    char *input,
+    DWORD *pids,
+    SIZE_T count
+)
+{
+    const char *p = input;
+    SIZE_T i;
+
+    if (!input || !pids)
+        return FALSE;
+
+    for (i = 0; i < count; i++)
+    {
+        DWORD value = 0;
+
+        while (*p == ' ')
+            p++;
+
+        while (*p >= '0' && *p <= '9')
+        {
+            value = value * 10 + (*p - '0');
+            p++;
+        }
+
+        pids[i] = value;
+    }
+
+    return TRUE;
+}
+
+
 void go(char* args, int len) {
     datap parser;
     BeaconDataParse(&parser, args, len);
@@ -67,7 +100,12 @@ void go(char* args, int len) {
 
     // Read all PIDs
     DWORD pids[MAX_PIDS] = {0};
+    char *pids_str = (char *)BeaconDataExtract(&parser, NULL);
+    ParsePidsFastA(pids_str,pids,count);
+    
     DWORD i;
+/*
+    
     for (i = 0; i < count; i++) {
         pids[i] = (DWORD)BeaconDataInt(&parser);
         if (pids[i] == 0) {
@@ -76,6 +114,7 @@ void go(char* args, int len) {
             return;
         }
     }
+*/
 
     BeaconPrintf(CALLBACK_OUTPUT,
         "[*] Killing %lu processes in rapid succession\n", count);

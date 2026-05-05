@@ -55,6 +55,21 @@ cmd_kill_process.setPreHook(function (id, cmdline, parsed_json, ...parsed_lines)
 });
 
 
+var cmd_kill_multi = ax.create_command("pk-kill-multi", "Kill multi processes by PIDs", 'pk-kill-multi <num of pids> "<pid1> <pid2> <pid3> ..."');
+
+cmd_kill_multi.addArgString("num", true, "The number of processes to kill");
+cmd_kill_multi.addArgString("pids", true, "The process pids to kill");
+
+cmd_kill_multi.setPreHook(function (id, cmdline, parsed_json, ...parsed_lines) {
+    let process_num = parsed_json["num"];
+    let process_pids = parsed_json["pids"];
+    let bof_params = ax.bof_pack("int,cstr",[process_num,process_pids]);
+    
+    let bof_path = ax.script_dir() + "_bin/kill_multi.x64.o";
+    ax.execute_alias(id, cmdline, `execute bof ${bof_path} ${bof_params}`, "Task: Kill multi processes");
+});
+
+
 var cmd_delete_file = ax.create_command("pk-delete", "Delete the file", "pk-delete <path>");
 
 cmd_delete_file.addArgString("path", true, "The full path of the file to be delete");
@@ -68,5 +83,5 @@ cmd_delete_file.setPreHook(function (id, cmdline, parsed_json, ...parsed_lines) 
 });
 
 
-var group_test = ax.create_commands_group("PoisonKiller-BOF", [cmd_pk_load, cmd_pk_unload, cmd_kill_process, cmd_delete_file]);
+var group_test = ax.create_commands_group("PoisonKiller-BOF", [cmd_pk_load, cmd_pk_unload, cmd_kill_process, cmd_delete_file, cmd_kill_multi]);
 ax.register_commands_group(group_test, ["beacon", "gopher", "kharon"], ["windows"], []);
